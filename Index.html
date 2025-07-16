@@ -1,0 +1,84 @@
+!DOCTYPE html
+html lang=zh-Hant
+head
+  meta charset=UTF-8
+  title午餐吃什麼？title
+  style
+    body { font-family sans-serif; text-align center; margin-top 80px; }
+    button { padding 10px 20px; font-size 18px; margin 5px; cursor pointer; }
+    #result { margin-top 30px; font-size 24px; font-weight bold; color #007bff; }
+  style
+head
+body
+  h1午餐吃什麼？h1
+  button onclick=pickLunch()幫我選！button
+  button onclick=skipLunch()我不想吃這個button
+  div id=resultdiv
+
+  script
+    const lunchOptions = [
+      老家池上便當,
+      萬兩食堂,
+      全哥鵝肉,
+      豪記水餃,
+      包子&me 嘉義火雞肉飯,
+      裴老師,
+      麥當勞,
+      麵癡食坊,
+      北方麵館,
+      Snoopy,
+      明奶奶,
+      夏威夷飯,
+      達人麵館
+    ];
+
+    const STORAGE_KEY = lunchHistory;
+
+    function getHistory() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      return JSON.parse(raw).filter(entry = {
+        const date = new Date(entry.date);
+        const now = new Date();
+        const diffDays = (now - date)  (1000  60  60  24);
+        return diffDays = 7;
+      });
+    }
+
+    function saveHistory(name) {
+      const history = getHistory();
+      history.push({ name, date new Date().toISOString() });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+    }
+
+    function getAvailableOptions() {
+      const history = getHistory().map(entry = entry.name);
+      return lunchOptions.filter(option = !history.includes(option));
+    }
+
+    let currentChoice = ;
+
+    function pickLunch() {
+      const options = getAvailableOptions();
+      if (options.length === 0) {
+        document.getElementById(result).innerText = 最近7天都吃過了，建議重置紀錄或冒險重複吃 😅;
+        return;
+      }
+      currentChoice = options[Math.floor(Math.random()  options.length)];
+      document.getElementById(result).innerText = `今天吃：${currentChoice}`;
+      saveHistory(currentChoice);
+    }
+
+    function skipLunch() {
+      const options = getAvailableOptions().filter(opt = opt !== currentChoice);
+      if (options.length === 0) {
+        document.getElementById(result).innerText = 沒得選了！最近7天都吃過，勇敢重複吧 😅;
+        return;
+      }
+      currentChoice = options[Math.floor(Math.random()  options.length)];
+      document.getElementById(result).innerText = `那就改吃：${currentChoice}`;
+      saveHistory(currentChoice);
+    }
+  script
+body
+html
